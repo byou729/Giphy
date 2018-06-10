@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Page Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" media="screen" href="resources/style/style.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="resources/logic/logic.js"></script>
+</head>
+
+<body>
+    <div id="buttons"></div>
+    <form id="gif-form">
+        <label for="gif-input">Add a Gif Type</label>
+        <input type="text" id="gif-input">
+        <br>
+        <input id="add-gif" type="submit" value="Add a Gif Type">
+    </form>
+
+    <script>
+        $(document).ready(function () {
+            var topics = ["dog", "cat", "bird", "fox"];
+            var main = $("body")
+            var btns = main.find("#buttons");
+
+            function renderButtons() {
+                for (var i = 0; i < topics.length; i++) {
+                    var topicBtn = $("<button>");
+                    topicBtn.attr("data-topic", topics[i]);
+                    topicBtn.text(topics[i]);
+                    btns.append(topicBtn);
+                }
+            }
+
+            function buildQueryURL() {
+                var queryURL = "https://api.giphy.com/v1/gifs/trending?";
+                var queryParams = { "api-key": "mV2vE9b6V7w9x79skDlevWL0eWWaRwAx" };
+                queryParams.q = $("#search-term")
+                    .val()
+                    .trim();
+                queryParams.g = $("#rating")
+                    .val()
+                    .trim();
+                queryParams.limit = 10;
+
+
+                $("#search-item").on("click", function () {
+                    var state = $(this).attr("data-state");
+                    if (state === "still") {
+                        $(this).attr("src", $(this).attr("data-animate"));
+                        $(this).attr("data-state", "animate");
+                    } else {
+                        $(this).attr("src", $(this).attr("data-still"));
+                        $(this).attr("data-state", "still");
+                    }
+                });
+
+            };
+
+            $("#search-term").on("click", function (event) {
+                event.preventDefault();
+                var queryURL = buildQueryURL();
+                $.ajax({
+                    url: queryURL,
+                    method: "GET"
+                }).then(renderButtons);
+            });
+        });
+
+
+
+
+    </script>
+</body>
+
+</html>
